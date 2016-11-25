@@ -30,7 +30,7 @@ module Wombat
     end
 
     def set_ca_file_path(ca_file_path)
-      @ca_file = ca_file_path
+      @ca_file_path = ca_file_path
     end
 
     alias_method :scrape, :crawl
