@@ -5,7 +5,7 @@ require 'wombat/crawler'
 module Wombat
   class << self
 
-    attr_reader :proxy_args, :user_agent, :user_agent_alias
+    attr_reader :proxy_args, :user_agent, :user_agent_alias, :ca_file_path
 
     def crawl(&block)
       klass = Class.new
@@ -27,6 +27,10 @@ module Wombat
 
     def set_user_agent_alias(user_agent_alias)
       @user_agent_alias = user_agent_alias
+    end
+
+    def set_ca_file_path(ca_file_path)
+      @ca_file = ca_file_path
     end
 
     alias_method :scrape, :crawl
