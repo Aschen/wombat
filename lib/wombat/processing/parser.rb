@@ -45,6 +45,7 @@ module Wombat
       def parse(metadata, url = nil, options = {})
         unless options.empty?
           options = options.each_with_object({}) do |(k, v), memo|
+            next if k.to_sym == :cookies
             memo[k.to_sym] = v.to_s unless v.nil?
           end
         end
