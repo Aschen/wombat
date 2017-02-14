@@ -62,6 +62,7 @@ module Wombat
         method = method_from(metadata[:http_method])
         data = metadata[:data]
         args = [url, data].compact
+
         begin
           @page = metadata[:page]
 
@@ -75,6 +76,13 @@ module Wombat
             parser.mechanize_page = @page # Mechanize::Page
             parser.headers = @page.header
           else
+            if options[:cookies]
+              url, data = *args
+              data ||= Hash.new
+              data.merge({ cookies: options[:cookies] })
+              args = [url, data].compact
+            end
+            
             @page = RestClient.public_send(method, *args) unless @page
             parser = Nokogiri::XML @page
             parser.headers = @page.headers
