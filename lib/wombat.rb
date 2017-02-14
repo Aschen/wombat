@@ -7,10 +7,10 @@ module Wombat
 
     attr_reader :proxy_args, :user_agent, :user_agent_alias, :ca_file_path
 
-    def crawl(&block)
+    def crawl(url = nil, options = {}, &block)
       klass = Class.new
       klass.send(:include, Wombat::Crawler)
-      klass.new.crawl(&block)
+      klass.new.crawl(url, options, &block)
     end
 
     def configure
