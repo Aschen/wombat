@@ -45,8 +45,9 @@ module Wombat
       def parse(metadata, url = nil, options = {})
         unless options.empty?
           options = options.each_with_object({}) do |(k, v), memo|
-            next if k.to_sym == :cookies
-            memo[k.to_sym] = v.to_s unless v.nil?
+            next if v.nil?
+            # Cookies needs to be a Hash
+            memo[k.to_sym] = (k.to_sym == :cookies) ? v : v.to_s
           end
         end
         @context = parser_for(metadata, url, options)
@@ -76,13 +77,6 @@ module Wombat
             parser.mechanize_page = @page # Mechanize::Page
             parser.headers = @page.header
           else
-            if options[:cookies]
-              url, data = *args
-              data ||= Hash.new
-              data.merge({ cookies: options[:cookies] })
-              args = [url, data].compact
-            end
-            
             @page = RestClient.public_send(method, *args) unless @page
             parser = Nokogiri::XML @page
             parser.headers = @page.headers
