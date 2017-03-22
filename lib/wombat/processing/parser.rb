@@ -46,8 +46,9 @@ module Wombat
         unless options.empty?
           options = options.each_with_object({}) do |(k, v), memo|
             next if v.nil?
-            # Cookies needs to be a Hash
-            memo[k.to_sym] = (k.to_sym == :cookies) ? v : v.to_s
+
+            # Cookies and Headers needs to be a Hash
+            memo[k.to_sym] = ([:cookies, :headers].include?(k.to_sym)) ? v : v.to_s
           end
         end
         @context = parser_for(metadata, url, options)
@@ -66,11 +67,11 @@ module Wombat
 
         begin
           @page = metadata[:page]
-
           if metadata[:document_format] == :html
             @mechanize.set_proxy(*options[:proxy_args]) if options[:proxy_args]
             @mechanize.user_agent = options[:user_agent] if options[:user_agent]
             @mechanize.user_agent_alias = options[:user_agent_alias] if options[:user_agent_alias]
+            @mechanize.request_headers = options[:headers] if options[:headers]
             update_cookies(url, options[:cookies]) if options[:cookies]
             @page = @mechanize.public_send(method, *args) unless @page
             parser = @page.parser         # Nokogiri::HTML::Document
